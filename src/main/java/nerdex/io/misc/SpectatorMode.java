@@ -16,15 +16,65 @@ package nerdex.io.misc;/*
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import nerdex.io.debug.Debugger;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpectatorMode {
 
-    public static void setPlayerInSpecMod(Player player){
+    private static boolean isSpec = false;
 
+    public static void setPlayerInSpecMod(Player player){
+        isSpec = true;
+        hidePlayer(player);
+        try {
+            for(ItemStack is : player.getInventory().getContents()){
+                if(is != null && is.getType() != Material.AIR){
+                    Bukkit.getWorld(player.getWorld().getName()).dropItemNaturally(player.getLocation(), is);
+                }
+            }
+        } catch (Exception e){
+            Debugger.sendExceptionDebug("EXCEPTION CAUGHT");
+            e.printStackTrace();
+        }
+        player.getInventory().clear();
+        ItemStack stack = new ItemStack(Material.COMMAND);
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.DARK_PURPLE + "Teleport");
+        stack.setItemMeta(meta);
+        player.getInventory().setItem(0, stack);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+    }
+
+    @EventHandler
+    private void cancelDamage(PlayerInteractAtEntityEvent event){
+        if(isSpec == true){
+            event.setCancelled(true);
+        } else {
+            event.setCancelled(false);
+        }
+    }
+
+    @EventHandler
+    private void cancelBlockBreak(BlockBreakEvent event){
+        if(isSpec == true){
+            event.setCancelled(true);
+        } else {
+            event.setCancelled(false);
+        }
     }
 
     public static void hidePlayer(Player player){
-        
+        for(Player p : Bukkit.getServer().getOnlinePlayers()){
+            p.hidePlayer(player);
+        }
     }
 }
