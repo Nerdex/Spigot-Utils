@@ -54,8 +54,21 @@ public class Debugger {
             String fileMessage = content;
 
             fileWriter = new FileWriter(location + format.format(calendar));
+            bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(fileMessage);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+                if(fileWriter != null){
+                    fileWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
