@@ -1,0 +1,6 @@
+name: SpigotUtils
+version: ${project.version}
+main: nerdex.io.spigotutils
+authors: [RapidTheNerd]
+description: Collection of spigot utils put into one
+website: http://rapidthenerd.me
