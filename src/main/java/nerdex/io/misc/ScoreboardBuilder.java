@@ -17,12 +17,15 @@ package nerdex.io.misc;/*
  */
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.AbstractMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +35,7 @@ public class ScoreboardBuilder {
 
     private static String title;
     private static Map<String, Integer> scores;
-    private List<Team> teams;
+    private static List<Team> teams;
 
     public ScoreboardBuilder(String title){
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -42,7 +45,11 @@ public class ScoreboardBuilder {
     }
 
     public static void blankeLine(){
+        add(" ");
+    }
 
+    public static void add(String text){
+        add(text, null);
     }
 
     public static void add(String text, Integer score){
@@ -58,5 +65,21 @@ public class ScoreboardBuilder {
                 text = text.substring(0, 47);
         }
         return text;
+    }
+
+    private static Map.Entry<Team, String> createTeam(String text){
+        String res = "";
+        if(text.length() <= 16)
+            return new AbstractMap.SimpleEntry<>(null, text);
+
+        Team team = scoreboard.registerNewTeam("text-" +  scoreboard.getTeams().size());
+        Iterator<String> iter = Splitter.fixedLength(16).split(text).iterator();
+        team.setPrefix(iter.next());
+        res = iter.next();
+
+        if(text.length() > 32)
+            team.setSuffix(iter.next());
+        teams.add(team);
+        return new AbstractMap.SimpleEntry<>(team, res);
     }
 }
