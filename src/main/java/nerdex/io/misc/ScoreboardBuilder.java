@@ -21,6 +21,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -81,5 +84,23 @@ public class ScoreboardBuilder {
             team.setSuffix(iter.next());
         teams.add(team);
         return new AbstractMap.SimpleEntry<>(team, res);
+    }
+
+    public static void build(){
+        Objective objective = scoreboard.registerNewObjective((title.length() > 16 ? title.substring(0, 15) : title), "dummy");
+        objective.setDisplayName(title);
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        int index = scores.size();
+
+        for(Map.Entry<String, Integer> text : scores.entrySet()){
+            Map.Entry<Team, String> team = createTeam(text.getKey());
+            Integer score = text.getValue() != null ? text.getValue() : index;
+            OfflinePlayer player = Bukkit.getOfflinePlayer(team.getValue());
+            if(team.getKey() != null)
+                team.getKey().addPlayer(player); //deprecated but who gives a fuck?
+            objective.getScore(player).setScore(score);
+            index -= 1;
+        }
     }
 }
