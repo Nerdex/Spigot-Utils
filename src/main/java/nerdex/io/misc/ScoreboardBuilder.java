@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -101,6 +102,24 @@ public class ScoreboardBuilder {
                 team.getKey().addPlayer(player); //deprecated but who gives a fuck?
             objective.getScore(player).setScore(score);
             index -= 1;
+        }
+    }
+
+    public static void reset(){
+        title = null;
+        scores.clear();
+        for(Team t : teams)
+            t.unregister();
+        teams.clear();
+    }
+
+    public static Scoreboard getScoreboard(){
+        return scoreboard;
+    }
+
+    public static void send(Player... players){
+        for(Player player : players){
+            player.setScoreboard(scoreboard);
         }
     }
 }
