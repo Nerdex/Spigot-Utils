@@ -16,6 +16,7 @@ package nerdex.io.misc;/*
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
@@ -41,6 +42,21 @@ public class ScoreboardBuilder {
     }
 
     public static void blankeLine(){
-        
+
+    }
+
+    public static void add(String text, Integer score){
+        Preconditions.checkArgument(text.length() < 48, "Text can't be over 48 characters");
+        text = fixDupes(text);
+        scores.put(text, score);
+    }
+
+    private static String fixDupes(String text){
+        while(scores.containsKey(text)){
+            text += "&r";
+            if(text.length() > 48)
+                text = text.substring(0, 47);
+        }
+        return text;
     }
 }
