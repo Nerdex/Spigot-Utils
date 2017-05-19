@@ -17,11 +17,33 @@ package nerdex.io.config;/*
  */
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 public class EzConfig {
 
     private File file;
-    private FileConfiguration configl;
+    private FileConfiguration config;
+
+    public EzConfig(String path, String fileName) {
+        if (!fileName.contains(".yml")) {
+            fileName = fileName + ".yml";
+        }
+
+        file = new File(path, fileName);
+        config = YamlConfiguration.loadConfiguration(file);
+
+        if (!file.exists()) {
+            config.options().copyDefaults(true);
+
+            try {
+                config.save(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
 }
