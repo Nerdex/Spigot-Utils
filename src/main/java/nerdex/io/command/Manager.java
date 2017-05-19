@@ -18,6 +18,9 @@ package nerdex.io.command;/*
 
 import org.bukkit.ChatColor;
 
+import java.lang.reflect.Method;
+import java.util.*;
+
 public class Manager {
 
     private static final String wildCard = "*";
@@ -27,4 +30,28 @@ public class Manager {
     private static final String permError = ChatColor.RED + "No permission";
     private static final String playerError = ChatColor.RED + "You're not a player, this can't be used for you";
     private static final String argError = ChatColor.RED + "Incorrect errors";
+
+    public static void register(Listener... listeners){
+        for(Listener listener : listeners){
+            Class<?> clazz = listener.getClass();
+            Method[] clazzMethods = clazz.getMethods();
+
+            Map<String, Set<Method>> map = new HashMap<>();
+
+            for(Method method : clazzMethods){
+                if(!method.isAnnotationPresent(Command.class)) continue;
+
+                List<String> names = new ArrayList<>();
+                if(!method.getAnnotation(Command.class).name().isEmpty()){
+                    Command command = method.getAnnotation(Command.class);
+
+                    if(command.name().trim().contains(" ")){
+                        names.addAll(new ArrayList<String>(Arrays.asList(command.name().trim().split(" "))));
+                    } else {
+                        names.add(command.name());
+                    }
+                }
+            }
+        }
+    }
 }
