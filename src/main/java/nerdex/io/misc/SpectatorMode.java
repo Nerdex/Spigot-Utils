@@ -23,7 +23,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -53,28 +54,37 @@ public class SpectatorMode {
         player.setAllowFlight(true);
         player.setFlying(true);
     }
-
     @EventHandler
-    private void cancelDamage(PlayerInteractAtEntityEvent event){
-        if(isSpec == true){
+    private static void cancelBlockBreak(BlockBreakEvent event){
+        if(isSpec == true)
             event.setCancelled(true);
-        } else {
-            event.setCancelled(false);
-        }
     }
 
+
     @EventHandler
-    private void cancelBlockBreak(BlockBreakEvent event){
-        if(isSpec == true){
+    private static void cancelDamage(EntityDamageByEntityEvent event){
+        if(isSpec == true && event.getEntity() instanceof Player)
             event.setCancelled(true);
-        } else {
-            event.setCancelled(false);
-        }
+    }
+
+
+    @EventHandler
+    private static void cancelBlockPlace(BlockPlaceEvent event){
+        if(isSpec == true)
+            event.setCancelled(true);
     }
 
     public static void hidePlayer(Player player){
         for(Player p : Bukkit.getServer().getOnlinePlayers()){
             p.hidePlayer(player);
         }
+    }
+
+    public static boolean isPlayerSpec() {
+        return isSpec;
+    }
+
+    public static void setPlayerSpec(boolean isSpec) {
+        SpectatorMode.isSpec = isSpec;
     }
 }
