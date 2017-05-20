@@ -17,14 +17,14 @@ package nerdex.io.packets;/*
  */
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_11_R1.DataWatcher;
+import net.minecraft.server.v1_11_R1.*;
 
 import java.util.List;
 
 public class PacketPlayOutNamedEntitySpawn {
 
     private int a;
-    private GameProfile profile;
+    private GameProfile b;
     private int c;
     private int d;
     private int e;
@@ -33,4 +33,20 @@ public class PacketPlayOutNamedEntitySpawn {
     private int h;
     private DataWatcher i;
     private List j;
+
+    public PacketPlayOutNamedEntitySpawn(){}
+
+    public PacketPlayOutNamedEntitySpawn(EntityHuman human){
+        this.a = human.getId();
+        this.b = human.getProfile();
+        this.c = MathHelper.floor(human.locX * 32.0D);
+        this.d = MathHelper.floor(human.locY * 32.0D);
+        this.e = MathHelper.floor(human.locZ * 32.0D);
+        this.f = (byte) ((int) (human.yaw * 256.0F / 360.0F));
+        this.g = (byte) ((int) (human.pitch * 256.0F / 360.0F));
+        ItemStack itemStack = human.inventory.getItemInHand();
+
+        this.h = itemStack == null ? 0 : Item.b(itemStack.getItem());
+        this.i = human.getDataWatcher();
+    }
 }
