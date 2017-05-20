@@ -19,6 +19,7 @@ package nerdex.io.packets;/*
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_11_R1.*;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PacketPlayOutNamedEntitySpawn {
@@ -46,7 +47,22 @@ public class PacketPlayOutNamedEntitySpawn {
         this.g = (byte) ((int) (human.pitch * 256.0F / 360.0F));
         ItemStack itemStack = human.inventory.getItemInHand();
 
-        this.h = itemStack == null ? 0 : Item.b(itemStack.getItem());
         this.i = human.getDataWatcher();
+    }
+    public void b(PacketDataSerializer packetDataSerializer){
+        packetDataSerializer.b(this.a);
+        packetDataSerializer.a(this.b.getId());
+        packetDataSerializer.a(this.b.getName());
+        packetDataSerializer.writeInt(this.c);
+        packetDataSerializer.writeInt(this.d);
+        packetDataSerializer.writeInt(this.e);
+        packetDataSerializer.writeByte(this.f);
+        packetDataSerializer.writeByte(this.g);
+        packetDataSerializer.writeShort(this.h);
+        try {
+            this.i.a(packetDataSerializer);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 }
