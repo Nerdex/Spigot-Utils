@@ -65,4 +65,14 @@ public class PacketPlayOutNamedEntitySpawn {
             e1.printStackTrace();
         }
     }
+
+    public void a(PacketListenerPlayOut out){
+        out.a((IChatBaseComponent) this);
+    }
+
+    public String b(){
+        return String.format("id=%d, gameProfile=\'%s\', x=%.2f, y=%.2f, z=%.2f, carried=%d", new Object[] {
+                Integer.valueOf(this.a), this.b, Float.valueOf((float) this.c / 32.0F), Float.valueOf((float) this.d / 32.0F),
+                Float.valueOf((float) this.e / 32.0F), Integer.valueOf(this.h)});
+    }
 }
